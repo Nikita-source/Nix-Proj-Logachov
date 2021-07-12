@@ -1,3 +1,5 @@
+package businesslogic;
+
 import static java.lang.Math.min;
 
 public class Dijkstra {

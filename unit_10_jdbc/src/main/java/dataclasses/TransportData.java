@@ -1,3 +1,5 @@
+package dataclasses;
+
 import java.util.List;
 
 public class TransportData {
