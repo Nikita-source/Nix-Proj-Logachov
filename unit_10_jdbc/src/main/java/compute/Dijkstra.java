@@ -1,4 +1,4 @@
-package businesslogic;
+package compute;
 
 import static java.lang.Math.min;
 

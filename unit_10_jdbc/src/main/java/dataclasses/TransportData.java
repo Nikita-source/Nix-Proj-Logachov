@@ -1,5 +1,6 @@
 package dataclasses;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransportData {
@@ -20,9 +21,18 @@ public class TransportData {
         return problems;
     }
 
-    public TransportData(int citiesCount, int[][] routes, List<List<Integer>> problems) {
+    public TransportData(int citiesCount) {
         this.citiesCount = citiesCount;
-        this.routes = routes;
-        this.problems = problems;
+        routes = new int[citiesCount][citiesCount];
+        for (int i = 0; i < citiesCount; i++) {
+            for (int j = 0; j < citiesCount; j++) {
+                if (i == j) {
+                    routes[i][j] = 0;
+                } else {
+                    routes[i][j] = 300000;
+                }
+            }
+        }
+        problems = new ArrayList<>();
     }
 }
