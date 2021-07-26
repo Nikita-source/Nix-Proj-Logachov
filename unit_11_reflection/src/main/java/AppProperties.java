@@ -1,12 +1,12 @@
 public class AppProperties {
     @PropertyKey(value = "connections.title")
-    public String title = "name";
+    public String title;
     @PropertyKey(value = "connections.limit")
-    public int maxConnections = 10;
+    public int maxConnections;
     @PropertyKey(value = "connections.path")
-    public String path = "wrong/path";
+    public String path;
     @PropertyKey(value = "connections.connect")
-    public boolean isConnect = false;
+    public boolean isConnect;
 
     @Override
     public String toString() {

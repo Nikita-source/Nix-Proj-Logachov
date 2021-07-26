@@ -1,4 +1,3 @@
-import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 import java.lang.reflect.Field;
@@ -8,7 +7,8 @@ public class ApplyProperties {
 
     public <T> T createPropertyObject(Class<T> propertyClass) {
         try {
-            Properties props = loadProperties();
+            LoadProperties loadProperties = new LoadProperties();
+            Properties props = loadProperties.getProperties();
             T instance = propertyClass.getDeclaredConstructor().newInstance();
 
             for (Field field : propertyClass.getDeclaredFields()) {
@@ -50,16 +50,5 @@ public class ApplyProperties {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static Properties loadProperties() {
-        Properties props = new Properties();
-        String path = ClassLoader.getSystemClassLoader().getResource("app.properties").getPath();
-        try (Reader input = new FileReader(new File(path))) {
-            props.load(input);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return props;
     }
 }
