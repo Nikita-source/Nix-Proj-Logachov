@@ -5,13 +5,10 @@ import personmodel.CsvMapping;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CsvMapper {
-    private final CsvParser csvParser = new CsvParser();
-
-    private <T> T createObject(Class<T> propertyClass, int rowNumber) {
+    private <T> T createObject(Class<T> propertyClass, CsvParser parser, String[] row) {
         try {
             T instance = propertyClass.getDeclaredConstructor().newInstance();
 
@@ -21,13 +18,12 @@ public class CsvMapper {
                 }
 
                 CsvMapping csvMapping = field.getAnnotation(CsvMapping.class);
-                List<String> headers = Arrays.asList(csvParser.getHeaders());
-                if (!headers.contains(csvMapping.value())) {
+                if (!parser.getHeaders().containsKey(csvMapping.value())) {
                     continue;
                 }
 
                 var type = field.getType();
-                String value = csvParser.getElement(rowNumber, csvMapping.value());
+                String value = row[parser.getHeaders().get(csvMapping.value())];
 
                 if (type == String.class) {
                     field.set(instance, value);
@@ -56,10 +52,11 @@ public class CsvMapper {
         }
     }
 
-    public <T> List<T> crateListOfObjects(Class<T> cl) {
+    public <T> List<T> crateListOfObjects(Class<T> cl, CsvParser parser) {
         List<T> instances = new ArrayList<>();
-        for (int i = 1; i < csvParser.getCsvData().size(); i++) {
-            T instance = createObject(cl, i);
+        List<String[]> data = parser.getCsvData();
+        for (int i = 1; i < data.size(); i++) {
+            T instance = createObject(cl, parser, data.get(i));
             instances.add(instance);
         }
         return instances;

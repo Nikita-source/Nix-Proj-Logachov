@@ -6,14 +6,16 @@ import com.opencsv.exceptions.CsvException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CsvParser {
-    private String path;
+    private final String path;
     private List<String[]> csvData;
 
-    public CsvParser() {
-        this.path = ClassLoader.getSystemClassLoader().getResource("person.csv").getPath();
+    public CsvParser(String path) {
+        this.path = path;
         csvData = new ArrayList<>();
         csvData = read();
     }
@@ -26,15 +28,18 @@ public class CsvParser {
         return csvData.get(row);
     }
 
-    public String[] getHeaders() {
-        return csvData.get(0);
+    public Map<String, Integer> getHeaders() {
+        String[] headers = csvData.get(0);
+        Map<String, Integer> headersMap = new HashMap<>();
+        for (int i = 0; i < headers.length; i++) {
+            headersMap.put(headers[i], i);
+        }
+        return headersMap;
     }
 
     public String getElement(int row, String col) {
-        for (int i = 0; i < getHeaders().length; i++) {
-            if (getHeaders()[i].equals(col)) {
-                return csvData.get(row)[i];
-            }
+        if (getHeaders().containsKey(col)) {
+            return csvData.get(row)[getHeaders().get(col)];
         }
         throw new RuntimeException("Column does not exist: " + col);
     }
