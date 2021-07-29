@@ -50,4 +50,9 @@ public class Teacher {
     public void setGroups(List<Group> groups) {
         this.groups = groups;
     }
+
+    public void addGroup(Group group) {
+        groups.add(group);
+        group.setTeacher(this);
+    }
 }

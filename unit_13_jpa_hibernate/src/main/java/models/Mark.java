@@ -3,15 +3,15 @@ package models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "topics")
+@Table(name = "marks")
 public class Mark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String mark;
+    @Column(name = "mark", nullable = false)
+    private Integer mark;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
@@ -27,7 +27,7 @@ public class Mark {
 
     }
 
-    public Mark(String mark, Student student, Lesson lesson) {
+    public Mark(Integer mark, Student student, Lesson lesson) {
         this.mark = mark;
         this.student = student;
         this.lesson = lesson;
@@ -41,11 +41,11 @@ public class Mark {
         this.id = id;
     }
 
-    public String getMark() {
+    public Integer getMark() {
         return mark;
     }
 
-    public void setMark(String mark) {
+    public void setMark(Integer mark) {
         this.mark = mark;
     }
 

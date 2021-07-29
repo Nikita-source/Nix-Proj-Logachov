@@ -1,6 +1,8 @@
 package models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "students")
@@ -18,11 +20,15 @@ public class Student {
     @Access(AccessType.PROPERTY)
     private Group group;
 
-    public Student() {
+    @OneToMany(mappedBy = "student")
+    private List<Mark> marks;
 
+    public Student() {
+        this.marks = new ArrayList<>();
     }
 
     public Student(String name, Group group) {
+        this.marks = new ArrayList<>();
         this.name = name;
         this.group = group;
     }
@@ -49,5 +55,19 @@ public class Student {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", group=" + group.getName() +
+                '}';
+    }
+
+    public void addMark(Mark mark) {
+        marks.add(mark);
+        mark.setStudent(this);
     }
 }

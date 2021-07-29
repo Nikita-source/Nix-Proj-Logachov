@@ -15,16 +15,21 @@ public class Course {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "lesson")
-    private List<Lesson> lessons;
+    @OneToMany(mappedBy = "course")
+    private List<Group> groups;
+
+    @OneToMany(mappedBy = "course")
+    private List<Topic> topics;
 
     public Course() {
-        this.lessons = new ArrayList<>();
+        this.groups = new ArrayList<>();
+        this.topics = new ArrayList<>();
     }
 
     public Course(String name) {
         this.name = name;
-        this.lessons = new ArrayList<>();
+        this.groups = new ArrayList<>();
+        this.topics = new ArrayList<>();
     }
 
     public Long getId() {
@@ -43,11 +48,29 @@ public class Course {
         this.name = name;
     }
 
-    public List<Lesson> getLessons() {
-        return lessons;
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    public void setLessons(List<Lesson> lessons) {
-        this.lessons = lessons;
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
+    public List<Topic> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(List<Topic> topics) {
+        this.topics = topics;
+    }
+
+    public void addGroup(Group group) {
+        groups.add(group);
+        group.setCourse(this);
+    }
+
+    public void addTopic(Topic topic) {
+        topics.add(topic);
+        topic.setCourse(this);
     }
 }
