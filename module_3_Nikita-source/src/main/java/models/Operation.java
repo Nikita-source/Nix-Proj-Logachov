@@ -49,11 +49,7 @@ public class Operation {
 
     public void setValue(Double value) {
         this.value = value;
-        if (value > 0 && operationCategory != null) {
-            this.operationCategory.setCategory(Category.INCOME);
-        } else if (value < 0 && operationCategory != null) {
-            this.operationCategory.setCategory(Category.EXPENSE);
-        }
+        verifyCategory();
     }
 
     public Account getAccount() {
@@ -78,10 +74,19 @@ public class Operation {
 
     public void setOperationCategory(OperationCategory operationCategory) {
         this.operationCategory = operationCategory;
-        if (value != null && value > 0 && operationCategory != null) {
-            this.operationCategory.setCategory(Category.INCOME);
-        } else if (value != null && value < 0 && operationCategory != null) {
-            this.operationCategory.setCategory(Category.EXPENSE);
+        verifyCategory();
+    }
+
+    private void verifyCategory() {
+        if (value != null && operationCategory != null) {
+            if (value > 0 && this.operationCategory.getCategory() != Category.INCOME) {
+                this.operationCategory.setId(1L);
+                this.operationCategory.setCategory(Category.INCOME);
+            }
+            if (value < 0 && this.operationCategory.getCategory() != Category.EXPENSE) {
+                this.operationCategory.setId(1L);
+                this.operationCategory.setCategory(Category.EXPENSE);
+            }
         }
     }
 }

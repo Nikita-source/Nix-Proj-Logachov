@@ -1,8 +1,6 @@
 package models;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "operations_category")
@@ -18,17 +16,13 @@ public class OperationCategory{
     @Column(name = "category")
     private Category category;
 
-    //@OneToMany(mappedBy = "operation_category", cascade = CascadeType.ALL, orphanRemoval = true)
-    //private List<Operation> operations;
-
     public OperationCategory() {
-        //this.operations = new ArrayList<>();
+
     }
 
     public OperationCategory(String name, Category category) {
         this.name = name;
         this.category = category;
-        //this.operations = new ArrayList<>();
     }
 
     public Long getId() {
@@ -54,12 +48,4 @@ public class OperationCategory{
     public void setCategory(Category category) {
         this.category = category;
     }
-
-    /*public List<Operation> getOperations() {
-        return operations;
-    }
-
-    public void setOperations(List<Operation> operations) {
-        this.operations = operations;
-    }*/
 }
