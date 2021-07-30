@@ -13,73 +13,78 @@ public class JpaService {
         Configuration configuration = new Configuration().configure();
         try (SessionFactory sessionFactory = configuration.buildSessionFactory()) {
             EntityManager entityManager = sessionFactory.createEntityManager();
-            createCategories(entityManager);
+            createOperationCategories(entityManager);
             createEntities(entityManager);
         }
     }
 
     private void createEntities(EntityManager entityManager) {
+        createUser(entityManager, "User_1", "User_1_mail", "User_1_phone");
+        createAccount(entityManager, 1000.0, "User_1_mail");
+        createOperation(entityManager, "transfer TO your account", 100.0, 1L, Instant.now().minus(2, ChronoUnit.DAYS));
+        createOperation(entityManager, "transfer FROM your account", -200.0, 1L, Instant.now().minus(1, ChronoUnit.DAYS));
+        createOperation(entityManager, "transfer TO your account", 300.0, 1L, Instant.now().minus(1, ChronoUnit.HOURS));
+        createOperation(entityManager, "transfer FROM your account", -400.0, 1L, Instant.now());
+    }
+
+    private void createOperationCategories(EntityManager entityManager) {
+        createOperationCategory(entityManager, "transfer TO your account", Category.INCOME);
+        createOperationCategory(entityManager, "transfer FROM your account", Category.EXPENSE);
+        createOperationCategory(entityManager, "salary", Category.INCOME);
+        createOperationCategory(entityManager, "stipend", Category.INCOME);
+        createOperationCategory(entityManager, "grant", Category.INCOME);
+        createOperationCategory(entityManager, "payment", Category.EXPENSE);
+        createOperationCategory(entityManager, "refill", Category.INCOME);
+        createOperationCategory(entityManager, "cash withdrawal", Category.EXPENSE);
+    }
+
+    private void createUser(EntityManager entityManager, String name, String email, String phoneNumber) {
         try {
             entityManager.getTransaction().begin();
 
             User user = new User();
-            user.setName("User_1");
-            user.setEmail("User_1_mail");
-            user.setPhoneNumber("User_1_phone");
+            user.setName(name);
+            user.setEmail(email);
+            user.setPhoneNumber(phoneNumber);
+            entityManager.persist(user);
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createAccount(EntityManager entityManager, Double balance, String userEmail) {
+        try {
+            entityManager.getTransaction().begin();
 
             Account account = new Account();
-            account.setBalance(1000.0);
+            account.setBalance(balance);
+            User user = (User) entityManager.createQuery("SELECT u FROM User u where u.email = :userEmail")
+                    .setParameter("userEmail", userEmail).getSingleResult();
             account.setUser(user);
             user.getAccounts().add(account);
+            entityManager.persist(account);
 
-            OperationCategory operationCategory = entityManager.find(OperationCategory.class, 1L);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createOperation(EntityManager entityManager, String operationCategoryName, Double value, Long accountId, Instant operationTime) {
+        try {
+            entityManager.getTransaction().begin();
 
             Operation operation = new Operation();
+            OperationCategory operationCategory = (OperationCategory) entityManager.createQuery("SELECT o FROM OperationCategory o where o.name = :operationCategoryName")
+                    .setParameter("operationCategoryName", operationCategoryName).getSingleResult();
             operation.setOperationCategory(operationCategory);
-            operation.setValue(100.0);
-            account.addOperation(operation);
-            operation.setOperationTime(Instant.now().minus(2, ChronoUnit.DAYS));
-
-            entityManager.persist(user);
-            entityManager.persist(account);
-            entityManager.persist(operationCategory);
-            entityManager.persist(operation);
-
-            operationCategory = entityManager.find(OperationCategory.class, 1L);
-
-            operation = new Operation();
-            operation.setOperationCategory(operationCategory);
-            operation.setValue(-200.0);
-            account.addOperation(operation);
-            operation.setOperationTime(Instant.now().minus(1, ChronoUnit.DAYS));
-
-            entityManager.persist(account);
-            entityManager.persist(operationCategory);
-            entityManager.persist(operation);
-
-            operationCategory = entityManager.find(OperationCategory.class, 1L);
-
-            operation = new Operation();
-            operation.setOperationCategory(operationCategory);
-            operation.setValue(300.0);
-            account.addOperation(operation);
-            operation.setOperationTime(Instant.now().minus(1, ChronoUnit.HOURS));
-
-            entityManager.persist(account);
-            entityManager.persist(operationCategory);
-            entityManager.persist(operation);
-
-
-            operationCategory = entityManager.find(OperationCategory.class, 1L);
-
-            operation = new Operation();
-            operation.setOperationCategory(operationCategory);
-            operation.setValue(-400.0);
-            account.addOperation(operation);
-            operation.setOperationTime(Instant.now());
-
-            entityManager.persist(account);
-            entityManager.persist(operationCategory);
+            operation.setValue(value);
+            entityManager.find(Account.class, accountId).addOperation(operation);
+            operation.setOperationTime(operationTime);
             entityManager.persist(operation);
 
             entityManager.getTransaction().commit();
@@ -89,52 +94,13 @@ public class JpaService {
         }
     }
 
-    private void createCategories(EntityManager entityManager) {
+    private void createOperationCategory(EntityManager entityManager, String categoryName, Category category) {
         try {
             entityManager.getTransaction().begin();
 
             OperationCategory operationCategory = new OperationCategory();
-            operationCategory.setName("default transaction");
-            entityManager.persist(operationCategory);
-
-            operationCategory = new OperationCategory();
-            operationCategory.setName("money transfer to...");
-            operationCategory.setCategory(Category.EXPENSE);
-            entityManager.persist(operationCategory);
-
-            operationCategory = new OperationCategory();
-            operationCategory.setName("money transfer from...");
-            operationCategory.setCategory(Category.INCOME);
-            entityManager.persist(operationCategory);
-
-            operationCategory = new OperationCategory();
-            operationCategory.setName("salary");
-            operationCategory.setCategory(Category.INCOME);
-            entityManager.persist(operationCategory);
-
-            operationCategory = new OperationCategory();
-            operationCategory.setName("stipend");
-            operationCategory.setCategory(Category.INCOME);
-            entityManager.persist(operationCategory);
-
-            operationCategory = new OperationCategory();
-            operationCategory.setName("grant");
-            operationCategory.setCategory(Category.INCOME);
-            entityManager.persist(operationCategory);
-
-            operationCategory = new OperationCategory();
-            operationCategory.setName("payment");
-            operationCategory.setCategory(Category.EXPENSE);
-            entityManager.persist(operationCategory);
-
-            operationCategory = new OperationCategory();
-            operationCategory.setName("refill");
-            operationCategory.setCategory(Category.INCOME);
-            entityManager.persist(operationCategory);
-
-            operationCategory = new OperationCategory();
-            operationCategory.setName("cash withdrawal");
-            operationCategory.setCategory(Category.EXPENSE);
+            operationCategory.setName(categoryName);
+            operationCategory.setCategory(category);
             entityManager.persist(operationCategory);
 
             entityManager.getTransaction().commit();

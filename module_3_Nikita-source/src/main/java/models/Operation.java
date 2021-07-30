@@ -78,15 +78,6 @@ public class Operation {
     }
 
     private void verifyCategory() {
-        if (value != null && operationCategory != null) {
-            if (value > 0 && this.operationCategory.getCategory() != Category.INCOME) {
-                this.operationCategory.setId(1L);
-                this.operationCategory.setCategory(Category.INCOME);
-            }
-            if (value < 0 && this.operationCategory.getCategory() != Category.EXPENSE) {
-                this.operationCategory.setId(1L);
-                this.operationCategory.setCategory(Category.EXPENSE);
-            }
-        }
+
     }
 }
