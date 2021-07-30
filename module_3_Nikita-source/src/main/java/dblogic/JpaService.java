@@ -1,8 +1,12 @@
+package dblogic;
+
 import models.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 public class JpaService {
     public void start() {
@@ -34,6 +38,7 @@ public class JpaService {
             operation.setOperationCategory(operationCategory);
             operation.setValue(100.0);
             account.addOperation(operation);
+            operation.setOperationTime(Instant.now().minus(2, ChronoUnit.DAYS));
 
             entityManager.persist(user);
             entityManager.persist(account);
@@ -46,6 +51,32 @@ public class JpaService {
             operation.setOperationCategory(operationCategory);
             operation.setValue(-200.0);
             account.addOperation(operation);
+            operation.setOperationTime(Instant.now().minus(1, ChronoUnit.DAYS));
+
+            entityManager.persist(account);
+            entityManager.persist(operationCategory);
+            entityManager.persist(operation);
+
+            operationCategory = entityManager.find(OperationCategory.class, 1L);
+
+            operation = new Operation();
+            operation.setOperationCategory(operationCategory);
+            operation.setValue(300.0);
+            account.addOperation(operation);
+            operation.setOperationTime(Instant.now().minus(1, ChronoUnit.HOURS));
+
+            entityManager.persist(account);
+            entityManager.persist(operationCategory);
+            entityManager.persist(operation);
+
+
+            operationCategory = entityManager.find(OperationCategory.class, 1L);
+
+            operation = new Operation();
+            operation.setOperationCategory(operationCategory);
+            operation.setValue(-400.0);
+            account.addOperation(operation);
+            operation.setOperationTime(Instant.now());
 
             entityManager.persist(account);
             entityManager.persist(operationCategory);
