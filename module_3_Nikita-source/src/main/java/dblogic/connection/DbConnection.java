@@ -1,4 +1,6 @@
-package dblogic;
+package dblogic.connection;
+
+import dblogic.services.JpaService;
 
 import java.io.IOException;
 import java.io.InputStream;

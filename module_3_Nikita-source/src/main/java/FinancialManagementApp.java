@@ -1,11 +1,14 @@
-import dblogic.JdbcService;
-import dblogic.JpaService;
+import ui.UiService;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
+
 
 public class FinancialManagementApp {
     public static void main(String[] args) {
-        new JpaService().start();
-        new JdbcService().writeToCsv(1L, LocalDateTime.now().minusDays(1), LocalDateTime.now());
+        try {
+            new UiService().uiMain();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,14 +1,14 @@
-package dblogic;
+package dblogic.services;
 
 import com.opencsv.CSVWriter;
+import dblogic.connection.DbConnection;
 import models.OperationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class JdbcService {
     private static final Logger LOGGER_INFO = LoggerFactory.getLogger("info");
     private static final Logger LOGGER_ERROR = LoggerFactory.getLogger("error");
 
-    public void writeToCsv(Long accountId, LocalDateTime fromTime, LocalDateTime toTime) {
+    public void writeToCsv(Long accountId, Instant fromTime, Instant toTime) {
         LOGGER_INFO.info("Exporting account data to the csv file, accountID:" + accountId);
         List<String[]> csvData = new ArrayList<>();
         if (!new File("operations.csv").exists()) {
@@ -37,7 +37,7 @@ public class JdbcService {
         }
     }
 
-    private List<OperationInfo> getOperations(Long accountId, LocalDateTime fromTime, LocalDateTime toTime, Connection connection) {
+    private List<OperationInfo> getOperations(Long accountId, Instant fromTime, Instant toTime, Connection connection) {
         List<OperationInfo> operations = new ArrayList<>();
 
         Long userId = getUserIdByAccountId(connection, accountId);
@@ -46,8 +46,8 @@ public class JdbcService {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM operations WHERE account_id = ? AND operation_time BETWEEN ? AND ?")) {
             statement.setLong(1, accountId);
-            statement.setTimestamp(2, Timestamp.from(fromTime.toInstant(ZoneOffset.UTC)));
-            statement.setTimestamp(3, Timestamp.from(toTime.toInstant(ZoneOffset.UTC)));
+            statement.setTimestamp(2, Timestamp.from(fromTime));
+            statement.setTimestamp(3, Timestamp.from(toTime));
             ResultSet res = statement.executeQuery();
 
             while (res.next()) {

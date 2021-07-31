@@ -1,0 +1,97 @@
+package dblogic.controllers;
+
+import models.*;
+
+import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.util.List;
+
+public class JpaController {
+    public void createUser(EntityManager entityManager, String name, String email, String phoneNumber) {
+        try {
+            entityManager.getTransaction().begin();
+
+            User user = new User();
+            user.setName(name);
+            user.setEmail(email);
+            user.setPhoneNumber(phoneNumber);
+            entityManager.persist(user);
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void createAccount(EntityManager entityManager, Double balance, String userEmail) {
+        try {
+            entityManager.getTransaction().begin();
+
+            Account account = new Account();
+            account.setBalance(balance);
+            User user = getUserByEmail(entityManager, userEmail);
+            account.setUser(user);
+            user.getAccounts().add(account);
+            entityManager.persist(account);
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void createOperation(EntityManager entityManager, String operationCategoryName, Double value, Long accountId, Instant operationTime) {
+        try {
+            entityManager.getTransaction().begin();
+
+            Operation operation = new Operation();
+            OperationCategory operationCategory = getCategoryByName(entityManager, operationCategoryName);
+            operation.setOperationCategory(operationCategory);
+            operation.setValue(value);
+            entityManager.find(Account.class, accountId).addOperation(operation);
+            operation.setOperationTime(operationTime);
+            entityManager.persist(operation);
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void createOperationCategory(EntityManager entityManager, String categoryName, Category category) {
+        try {
+            entityManager.getTransaction().begin();
+
+            OperationCategory operationCategory = new OperationCategory();
+            operationCategory.setName(categoryName);
+            operationCategory.setCategory(category);
+            entityManager.persist(operationCategory);
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public User getUserByEmail(EntityManager entityManager, String userEmail) {
+        return (User) entityManager.createQuery("SELECT u FROM User u where u.email = :userEmail")
+                .setParameter("userEmail", userEmail).getSingleResult();
+    }
+
+    public OperationCategory getCategoryByName(EntityManager entityManager, String operationCategoryName) {
+        return (OperationCategory) entityManager.createQuery("SELECT o FROM OperationCategory o where o.name = :operationCategoryName")
+                .setParameter("operationCategoryName", operationCategoryName).getSingleResult();
+    }
+
+    public List<OperationCategory> getAllCategories(EntityManager entityManager) {
+        return entityManager.createQuery("SELECT o FROM OperationCategory o", OperationCategory.class).getResultList();
+    }
+
+    public List<User> getAllUsers(EntityManager entityManager) {
+        return entityManager.createQuery("SELECT o FROM User o", User.class).getResultList();
+    }
+}
