@@ -6,6 +6,8 @@ import dblogic.services.JpaService;
 import models.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import java.io.BufferedReader;
@@ -16,6 +18,7 @@ import java.util.List;
 
 public class UiService {
     private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private static final Logger LOGGER = LoggerFactory.getLogger("UiServiceLOGS");
 
     public void uiMain() throws IOException {
         JpaController jpaController = new JpaController();
@@ -35,18 +38,23 @@ public class UiService {
                 str = reader.readLine();
                 switch (str) {
                     case "1":
+                        LOGGER.info("User create");
                         createUser(jpaController, entityManager);
                         break;
                     case "2":
+                        LOGGER.info("Account create");
                         createAccount(jpaController, entityManager);
                         break;
                     case "3":
+                        LOGGER.info("Operation create");
                         createOperation(jpaController, entityManager);
                         break;
                     case "4":
+                        LOGGER.info("Operation Category create");
                         createOperationCategory(jpaController, entityManager);
                         break;
                     case "5":
+                        LOGGER.info("Extract From Operations");
                         extractFromOperations(jpaController, entityManager);
                         break;
                 }
@@ -88,6 +96,7 @@ public class UiService {
             System.out.println("Please enter operation value");
             value = Double.parseDouble(reader.readLine());
             if (value == 0) {
+                LOGGER.error("The value is  0");
                 System.out.println("Value cannot be 0. Please try again");
             } else {
                 break;
@@ -104,6 +113,7 @@ public class UiService {
             index = Integer.parseInt(reader.readLine());
             if (value > 0 && operationCategories.get(index - 1).getCategory() == Category.EXPENSE
                     || value < 0 && operationCategories.get(index - 1).getCategory() == Category.INCOME) {
+                LOGGER.error("OperationCategory does not match the value ");
                 System.out.println("You have selected the wrong category. Please try again");
             } else {
                 break;
@@ -157,6 +167,7 @@ public class UiService {
 
             new JdbcService().writeToCsv(accountId, instantFrom, instantTo);
         } catch (IOException e) {
+            LOGGER.error("Error with export " + e.getMessage());
             throw new RuntimeException("Error with export");
         }
     }

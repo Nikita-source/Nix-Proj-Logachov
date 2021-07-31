@@ -1,13 +1,18 @@
 package dblogic.controllers;
 
 import models.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.util.List;
 
 public class JpaController {
+    private static final Logger LOGGER = LoggerFactory.getLogger("JpaControllerLOGS");
+
     public void createUser(EntityManager entityManager, String name, String email, String phoneNumber) {
+        LOGGER.info("Create - User:" + name + " " + email + " " + phoneNumber);
         try {
             entityManager.getTransaction().begin();
 
@@ -18,13 +23,16 @@ public class JpaController {
             entityManager.persist(user);
 
             entityManager.getTransaction().commit();
+            LOGGER.info("Creation completed - User:" + name + " " + email + " " + phoneNumber);
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            LOGGER.error("User Create ERROR:" + e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
     public void createAccount(EntityManager entityManager, Double balance, String userEmail) {
+        LOGGER.info("Create - Account");
         try {
             entityManager.getTransaction().begin();
 
@@ -36,13 +44,16 @@ public class JpaController {
             entityManager.persist(account);
 
             entityManager.getTransaction().commit();
+            LOGGER.info("Creation completed - Account:" + user.getName() + " " + balance);
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            LOGGER.error("Account Create ERROR:" + e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
     public void createOperation(EntityManager entityManager, String operationCategoryName, Double value, Long accountId, Instant operationTime) {
+        LOGGER.info("Create - Operation:" + operationCategoryName + " " + value + " " + operationTime);
         try {
             entityManager.getTransaction().begin();
 
@@ -55,13 +66,16 @@ public class JpaController {
             entityManager.persist(operation);
 
             entityManager.getTransaction().commit();
+            LOGGER.info("Creation completed - Operation:" + operationCategoryName + " " + value + " " + operationTime);
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            LOGGER.error("Operation Create ERROR:" + e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
     public void createOperationCategory(EntityManager entityManager, String categoryName, Category category) {
+        LOGGER.info("Create - Category:" + categoryName + " " + category);
         try {
             entityManager.getTransaction().begin();
 
@@ -71,8 +85,10 @@ public class JpaController {
             entityManager.persist(operationCategory);
 
             entityManager.getTransaction().commit();
+            LOGGER.info("Creation completed - Category:" + categoryName + " " + category);
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            LOGGER.error("Category Create ERROR:" + e.getMessage());
             throw new RuntimeException(e);
         }
     }

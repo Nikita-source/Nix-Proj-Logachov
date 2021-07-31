@@ -21,7 +21,7 @@ public class Operation {
     @Column(name = "operation_time", nullable = false)
     private Instant operationTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "operation_category_id", referencedColumnName = "id")
     private OperationCategory operationCategory;
 

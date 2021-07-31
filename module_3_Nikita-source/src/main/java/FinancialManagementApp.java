@@ -8,7 +8,7 @@ public class FinancialManagementApp {
         try {
             new UiService().uiMain();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("UI Error");
         }
     }
 }

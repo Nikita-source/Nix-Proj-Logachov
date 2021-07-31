@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcService {
-    private static final Logger LOGGER_INFO = LoggerFactory.getLogger("info");
-    private static final Logger LOGGER_ERROR = LoggerFactory.getLogger("error");
+    private static final Logger LOGGER = LoggerFactory.getLogger("JdbcServiceLOGS");
 
     public void writeToCsv(Long accountId, Instant fromTime, Instant toTime) {
-        LOGGER_INFO.info("Exporting account data to the csv file, accountID:" + accountId);
+        LOGGER.info("Exporting account data to the csv file, accountID:" + accountId);
         List<String[]> csvData = new ArrayList<>();
         if (!new File("operations.csv").exists()) {
             csvData.add(operationsHeaderCsv());
@@ -29,11 +28,9 @@ public class JdbcService {
                 csvData.add(operationToStringArray(op));
             }
             writer.writeAll(csvData);
-            LOGGER_INFO.info("Data export completed, accountID:" + accountId);
+            LOGGER.info("Data export completed, accountID:" + accountId);
         } catch (IOException ex) {
-            LOGGER_ERROR.error("Can't write to csv" + ex.getMessage());
-        } catch (SQLException ex) {
-            LOGGER_ERROR.error("Can't connect to db" + ex.getMessage());
+            LOGGER.error("Can't write to csv" + ex.getMessage());
         }
     }
 
@@ -60,7 +57,7 @@ public class JdbcService {
                 operations.add(operation);
             }
         } catch (SQLException ex) {
-            LOGGER_ERROR.error("Operations read ERROR:" + ex.getMessage());
+            LOGGER.error("Operations read ERROR:" + ex.getMessage());
             throw new RuntimeException(ex);
         }
         return operations;
@@ -84,7 +81,7 @@ public class JdbcService {
             res.next();
             return res.getLong(3);
         } catch (SQLException ex) {
-            LOGGER_ERROR.error("Account read ERROR:" + ex.getMessage());
+            LOGGER.error("Account read ERROR:" + ex.getMessage());
             throw new RuntimeException(ex);
         }
     }
@@ -97,7 +94,7 @@ public class JdbcService {
             res.next();
             return res.getString(3);
         } catch (SQLException ex) {
-            LOGGER_ERROR.error("User read ERROR:" + ex.getMessage());
+            LOGGER.error("User read ERROR:" + ex.getMessage());
             throw new RuntimeException(ex);
         }
     }
