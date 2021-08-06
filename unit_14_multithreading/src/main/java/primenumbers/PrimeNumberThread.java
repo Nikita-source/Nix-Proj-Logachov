@@ -15,7 +15,7 @@ public class PrimeNumberThread implements Callable<Integer> {
         int count = 0;
         for (Integer i : list) {
             boolean isPrimeNumber = true;
-            if (i == 1) {
+            if (i == 1 || i == 0) {
                 isPrimeNumber = false;
             }
             for (int j = 2; j < i; j++) {

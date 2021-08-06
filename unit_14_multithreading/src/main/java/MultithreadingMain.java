@@ -10,22 +10,32 @@ import java.util.concurrent.FutureTask;
 public class MultithreadingMain {
 
     public static void main(String[] args) {
-        //helloThread();
-        primeNumbers();
+        helloThread();
+        //primeNumbers();
     }
 
     private static void helloThread() {
+        List<PrintHelloThread> helloThreadList = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            PrintHelloThread helloThread = new PrintHelloThread(i + 1, 50);
-            new Thread(helloThread).start();
+            helloThreadList.add(new PrintHelloThread());
+        }
+
+        for (int i = 49; i > -1; i--) {
+            helloThreadList.get(i).start();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 
     private static void primeNumbers() {
         int countPrime = 0;
 
         List<Integer> numbers = new ArrayList<>();
-        for (int i = 1; i < 201; i++) {
+        for (int i = 0; i < 201; i++) {
             numbers.add(i);
         }
 
@@ -39,10 +49,8 @@ public class MultithreadingMain {
         try {
             countPrime += primeNumberTasks1.get();
             countPrime += primeNumberTasks2.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
         }
 
         System.out.println("total amount = " + countPrime);
