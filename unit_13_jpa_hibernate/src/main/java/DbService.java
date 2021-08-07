@@ -30,7 +30,7 @@ public class DbService {
             Lesson lesson = queryLesson.getSingleResult();
 
             if (student != null && lesson != null) {
-                System.out.println(student + " next lesson is: " + lesson);
+                System.out.println(printStudent(student) + " next lesson is: " + printLesson(lesson));
             } else {
                 System.out.println("Student or lesson not found");
             }
@@ -115,5 +115,24 @@ public class DbService {
             entityManager.getTransaction().rollback();
             throw new RuntimeException(e);
         }
+    }
+
+    private String printStudent(Student student) {
+        return "Student{" +
+                "id=" + student.getId() +
+                ", name='" + student.getName() + '\'' +
+                ", group=" + student.getGroup().getName() +
+                '}';
+    }
+
+    private String printLesson(Lesson lesson) {
+        return "Lesson{" +
+                "id=" + lesson.getId() +
+                ", name='" + lesson.getName() + '\'' +
+                ", topic=" + lesson.getTopic().getName() +
+                ", group=" + lesson.getGroup().getName() +
+                ", teacher=" + lesson.getGroup().getTeacher().getName() +
+                ", lessonTime=" + lesson.getLessonTime() +
+                '}';
     }
 }

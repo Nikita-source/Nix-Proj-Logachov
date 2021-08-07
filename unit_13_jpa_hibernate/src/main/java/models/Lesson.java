@@ -92,18 +92,6 @@ public class Lesson {
         this.lessonTime = lessonTime;
     }
 
-    @Override
-    public String toString() {
-        return "Lesson{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", topic=" + topic.getName() +
-                ", group=" + group.getName() +
-                ", teacher=" + group.getTeacher().getName() +
-                ", lessonTime=" + lessonTime +
-                '}';
-    }
-
     public void addMark(Mark mark) {
         marks.add(mark);
         mark.setLesson(this);

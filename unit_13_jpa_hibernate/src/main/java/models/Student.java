@@ -57,15 +57,6 @@ public class Student {
         this.group = group;
     }
 
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", group=" + group.getName() +
-                '}';
-    }
-
     public void addMark(Mark mark) {
         marks.add(mark);
         mark.setStudent(this);
