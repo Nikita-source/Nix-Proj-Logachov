@@ -11,7 +11,7 @@ public class MultithreadingMain {
 
     public static void main(String[] args) {
         helloThread();
-        //primeNumbers();
+        primeNumbers();
     }
 
     private static void helloThread() {
