@@ -40,6 +40,7 @@ public class HippodromeMain {
 
         System.out.println("Choose your horse");
         int horseNumber;
+        String horse = "horse ";
         try {
             horseNumber = Integer.parseInt(reader.readLine());
             if (horseNumber > horseCount || horseNumber < 1) {
@@ -50,10 +51,20 @@ public class HippodromeMain {
         }
         Queue<String> horseQueue = horseRace();
 
-        if (horseQueue.element().equals("horse ".concat(String.valueOf(horseNumber)))) {
+        horse += String.valueOf(horseNumber);
+        if (horseQueue.element().equals(horse)) {
             System.out.println("You won!!!");
         } else {
             System.out.println("You lose");
+        }
+
+        int counter = 0;
+        for (String s : horseQueue) {
+            counter++;
+            if (s.equals(horse)) {
+                System.out.println(horse + " is at position " + counter + " in the queue.");
+                break;
+            }
         }
     }
 }
